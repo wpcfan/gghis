@@ -1,0 +1,10 @@
+<md-toolbar color="primary" >
+  <button #menu md-icon-button (click)="onClick()">
+    <md-icon>menu</md-icon>
+  </button>
+  <span>格冠医疗管理系统</span>
+  <span class="spacer"></span>
+  <span *ngIf="auth$.user !== undefined">
+    <a routerLink="/profile">{{(auth$|async).user.name}}</a>
+  </span>
+</md-toolbar>

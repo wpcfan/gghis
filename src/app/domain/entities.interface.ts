@@ -8,8 +8,12 @@ export interface User {
 }
 
 export interface Err {
-  code: number;
+  timestamp: Date;
+  status: number;
+  error: string;
+  exception: string;
   message: string;
+  path: string;
 }
 
 export interface Auth {
