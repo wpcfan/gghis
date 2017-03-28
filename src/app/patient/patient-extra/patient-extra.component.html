@@ -1,0 +1,40 @@
+<div>
+  <md-input-container dividerColor="primary" align="start">
+    <input mdInput name="name" type="text" placeholder="姓名">
+  </md-input-container>
+  <md-radio-group>
+    <span mdPrefix>性别：</span>
+    <md-radio-button value="true" checked="true">男</md-radio-button>
+    <md-radio-button value="false">女</md-radio-button>
+  </md-radio-group>
+  <md-select placeholder="血型" align="end">
+    <md-option value="A">A</md-option>
+    <md-option value="B">B</md-option>
+    <md-option value="AB">AB</md-option>
+    <md-option value="O">O</md-option>
+    <md-option value="NA">不详</md-option>
+  </md-select>
+  <md-input-container dividerColor="primary" align="end">
+      <input mdInput name="age" type="number" placeholder="年龄" max="999" min="1">
+  </md-input-container>
+  <md-button-toggle-group>
+    <md-button-toggle value="year" checked="true">岁</md-button-toggle>
+    <md-button-toggle value="month">月</md-button-toggle>
+    <md-button-toggle value="day">天</md-button-toggle>
+  </md-button-toggle-group>
+  <md-input-container dividerColor="primary" align="start">
+      <input mdInput type="date" placeholder="出生日期">
+      <md-hint align="start">YYYY-MM-DD格式输入</md-hint>
+  </md-input-container>
+  <md-button-toggle-group>
+    <md-button-toggle value="self" checked="true">自费</md-button-toggle>
+    <md-button-toggle value="bill">记账</md-button-toggle>
+    <md-button-toggle value="insurance">医保</md-button-toggle>
+  </md-button-toggle-group>
+  <md-input-container dividerColor="primary" align="start">
+    <input mdInput name="phone" type="tel" placeholder="联系电话">
+  </md-input-container>
+  <md-input-container>
+    <textarea mdInput placeholder="家庭住址">1600 Amphitheatre Pkwy</textarea>
+  </md-input-container>
+</div>

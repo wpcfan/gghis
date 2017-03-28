@@ -1,4 +1,7 @@
-<md-tab-group [selectedIndex]="(tab$ | async).index">
+<md-tab-group 
+  [selectedIndex]="(tab$ | async).index" 
+  (selectedIndexChange)="onSelectedChange(tabs.selectedIndex)" 
+  #tabs>
   <md-tab label="登录">
     <app-login></app-login>
   </md-tab>

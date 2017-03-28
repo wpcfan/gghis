@@ -1,10 +1,18 @@
-<form [formGroup]="forgotForm" (ngSubmit)="onSubmit()" fxLayout="column">
-  <md-input-container fxFlex>
-    <input mdInput placeholder="邮件地址" formControlName="email">
-  </md-input-container>
-  <div fxFlex>
-    <button md-raised-button type="submit">取回密码</button>
-    <a (click)="switchToLogin()">登录</a>
+<form 
+[formGroup]="forgotForm" 
+(ngSubmit)="onSubmit()">
+  <div>
+    <md-input-container>
+      <input mdInput placeholder="邮件地址" formControlName="email">
+    </md-input-container>
   </div>
-  <a (click)="switchToRegister()" fxFlex>注册</a>
+  <div>
+    <button md-raised-button type="submit">取回密码</button>
+  </div>
+  <div>
+    <md-toolbar>
+      <a md-button (click)="switchToRegister()">注册</a>
+      <a md-button (click)="switchToLogin()">登录</a>
+    </md-toolbar>
+  </div>
 </form>
