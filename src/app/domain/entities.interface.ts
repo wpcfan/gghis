@@ -1,9 +1,10 @@
 import { RouterState } from '@ngrx/router-store';
 
 export interface User {
-  id: string;
+  id?: string;
   name: string;
-  gender: boolean;
+  password?: string;
+  gender?: boolean;
   phone?: string;
 }
 
@@ -22,7 +23,12 @@ export interface Auth {
   token?: string;
 }
 
+export interface LoginTab {
+  index: number;
+}
+
 export interface AppState{
   auth: Auth;
+  loginTab: LoginTab;
   router: RouterState;
 }

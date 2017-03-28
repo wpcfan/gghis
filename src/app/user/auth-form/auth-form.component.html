@@ -1,0 +1,11 @@
+<md-tab-group [selectedIndex]="(tab$ | async).index">
+  <md-tab label="登录">
+    <app-login></app-login>
+  </md-tab>
+  <md-tab label="注册">
+    <app-register></app-register>
+  </md-tab>
+  <md-tab label="忘记密码">
+    <app-forgot></app-forgot>
+  </md-tab>
+</md-tab-group>

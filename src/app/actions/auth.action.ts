@@ -3,19 +3,13 @@ import { type } from '../utils/type';
 import { Auth, Err } from '../domain/entities.interface';
 
 export const ActionTypes = {
-  LOGIN:             type('[Auth] Login'),
   LOGIN_SUCCESS:     type('[Auth] Login Success'),
   LOGIN_FAIL:        type('[Err] Login Fail'),
-  REGISTER:          type('[Auth] Register'),
   REGISTER_SUCCESS:  type('[Auth] Register Success'),
   REGISTER_FAIL:     type('[Err] Register Fail'),
   LOGOUT:            type('[Auth] Logout')
 };
 
-export class LoginAction implements Action {
-  type = ActionTypes.LOGIN;
-  constructor(public payload: Auth){}
-}
 
 export class LoginSuccessAction implements Action {
   type = ActionTypes.LOGIN_SUCCESS;
@@ -25,11 +19,6 @@ export class LoginSuccessAction implements Action {
 export class LoginFailAction implements Action {
   type = ActionTypes.LOGIN_FAIL;
   constructor(public payload: Err){}
-}
-
-export class RegisterAction implements Action {
-  type = ActionTypes.REGISTER;
-  constructor(public payload: Auth){}
 }
 
 export class RegisterSuccessAction implements Action {
@@ -48,10 +37,8 @@ export class LogoutAction implements Action {
 }
 
 export type Actions
-  = LoginAction
-  | LoginSuccessAction
+  = LoginSuccessAction
   | LoginFailAction
-  | RegisterAction
   | RegisterSuccessAction
   | RegisterFailAction
   | LogoutAction;

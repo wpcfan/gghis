@@ -1,0 +1,29 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" fxLayout="column">
+  <md-input-container fxFlex>
+    <input mdInput placeholder="用户名" formControlName="username">
+    <div class='form-text error' *ngIf="registerForm.controls.username.touched">
+      <div *ngIf="registerForm.controls.username.hasError('required')">用户名是必填项</div>
+    </div> 
+  </md-input-container>
+
+    <md-input-container fxFlex>
+      <input mdInput placeholder="密码" formControlName="password">
+      <div class='form-text error' *ngIf="registerForm.controls.password.touched">
+        <div *ngIf="registerForm.controls.password.hasError('required')">密码是必填项</div>
+      </div> 
+    </md-input-container>
+    <md-input-container fxFlex>
+      <input mdInput placeholder="再输入一次密码" formControlName="repeat">
+      <div class='form-text error' *ngIf="registerForm.controls.repeat.touched">
+        <div *ngIf="registerForm.controls.repeat.hasError('required')">重复密码是必填项</div>
+        <div *ngIf="registerForm.hasError('mismatchedPasswords')">密码不一致</div>
+      </div> 
+    </md-input-container>
+
+  
+  <div fxFlex>
+    <button md-raised-button type="submit" [disabled]='!registerForm.valid'>注册</button>
+    <a (click)="switchToLogin()">已有有账号？</a>
+  </div>
+  <a (click)="switchToForgot()" fxFlex>忘记密码</a>
+</form>

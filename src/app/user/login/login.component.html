@@ -1,0 +1,13 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" fxLayout="column">
+  <md-input-container fxFlex>
+    <input mdInput placeholder="用户名" formControlName="username">
+  </md-input-container>
+  <md-input-container fxFlex>
+    <input mdInput placeholder="密码" formControlName="password">
+  </md-input-container>
+  <div fxFlex>
+    <button md-raised-button type="submit">登录</button>
+    <a (click)="switchToRegister()">还没有账号？</a>
+  </div>
+  <a (click)="switchToForgot()" fxFlex>忘记密码</a>
+</form>

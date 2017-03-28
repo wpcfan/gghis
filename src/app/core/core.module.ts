@@ -5,9 +5,10 @@ import { StoreModule } from '@ngrx/store';
 import { routerReducer, RouterStoreModule } from '@ngrx/router-store';
 import { HttpModule } from '@angular/http';
 import { MaterialModule, MdSidenav, MdSidenavContainer } from '@angular/material';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { authReducer } from '../reducers/auth.reducer';
+import { loginTabReducer } from '../reducers/login-tab.reducer';
 import { AuthGuardService } from './auth-guard.service';
-import { AuthService } from './auth.service';
 import 'hammerjs';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
@@ -17,12 +18,15 @@ import { FooterComponent } from './footer/footer.component';
     CommonModule,
     BrowserAnimationsModule,
     MaterialModule,
+    FlexLayoutModule,
     StoreModule.provideStore({
-      auth: authReducer
+      auth: authReducer,
+      loginTab: loginTabReducer
     }),
     RouterStoreModule.connectRouter()
   ],
   exports:[
+    FlexLayoutModule,
     HeaderComponent,
     FooterComponent,
     MdSidenav,
@@ -30,7 +34,6 @@ import { FooterComponent } from './footer/footer.component';
   ],
   providers:[
     AuthGuardService,
-    AuthService,
     {
       provide: 'API_BASE_URL',
       useValue: 'http://localhost:8090'

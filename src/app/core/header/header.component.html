@@ -4,7 +4,7 @@
   </button>
   <span>格冠医疗管理系统</span>
   <span class="spacer"></span>
-  <span *ngIf="auth$.user !== undefined">
+  <span *ngIf="(auth$ | async).user !== undefined">
     <a routerLink="/profile">{{(auth$|async).user.name}}</a>
   </span>
 </md-toolbar>
