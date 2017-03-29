@@ -9,6 +9,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { authReducer } from '../reducers/auth.reducer';
 import { loginTabReducer } from '../reducers/login-tab.reducer';
 import { AuthGuardService } from './auth-guard.service';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import 'hammerjs';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
@@ -23,7 +24,11 @@ import { FooterComponent } from './footer/footer.component';
       auth: authReducer,
       loginTab: loginTabReducer
     }),
-    RouterStoreModule.connectRouter()
+    RouterStoreModule.connectRouter(),
+    // Note that you must instrument after importing StoreModule
+    StoreDevtoolsModule.instrumentOnlyWithExtension({
+      maxAge: 5
+    })
   ],
   exports:[
     FlexLayoutModule,
