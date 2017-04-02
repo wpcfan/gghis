@@ -1,20 +1,18 @@
 <form 
-[formGroup]="form" 
-(ngSubmit)="onSubmit()">
+ [formGroup]="form" 
+ (ngSubmit)="onSubmit(form)"
+ class="form"
+ novalidate>
   <md-input-container>
-    <input mdInput  formControlName="name" type="text" placeholder="姓名">
+    <input mdInput formControlName="name" type="text" placeholder="姓名">
   </md-input-container>
   <md-radio-group formControlName="gender">
     <span mdPrefix>性别：</span>
-    <md-radio-button value="true" checked="true">男</md-radio-button>
+    <md-radio-button value="true">男</md-radio-button>
     <md-radio-button value="false">女</md-radio-button>
   </md-radio-group>
   <md-select placeholder="血型" align="end" formControlName="bloodType">
-    <md-option value="A">A</md-option>
-    <md-option value="B">B</md-option>
-    <md-option value="AB">AB</md-option>
-    <md-option value="O">O</md-option>
-    <md-option value="NA">不详</md-option>
+    <md-option *ngFor="let type of bloodTypes" [value]="type.bloodType">{{type.label}}</md-option>
   </md-select>
   <md-input-container align="end">
       <input mdInput 
@@ -23,29 +21,41 @@
         placeholder="年龄" 
         max="200" 
         min="1"
-        >
+        [value]="(ageConvert$ | async).age">
   </md-input-container>
-  <md-button-toggle-group formControlName="ageUnit">
-    <md-button-toggle value="0">岁</md-button-toggle>
-    <md-button-toggle value="1">月</md-button-toggle>
-    <md-button-toggle value="2">天</md-button-toggle>
+  <md-button-toggle-group 
+    formControlName="ageUnit" 
+    [value]="(ageConvert$ | async).ageUnit">
+    <md-button-toggle 
+      *ngFor="let unit of ageUnits" 
+      [value]="unit.ageUnit">
+      {{unit.label}}
+    </md-button-toggle>
   </md-button-toggle-group>
   <md-input-container>
-      <input mdInput formControlName="dateOfBirth" type="date" placeholder="出生日期">
+      <input mdInput 
+        formControlName="dateOfBirth" 
+        type="date" 
+        placeholder="出生日期"
+        min="1900-01-01"
+        max="2999-01-01"
+        [value]="(ageConvert$ | async).dateOfBirth">
       <md-hint align="start">YYYY/MM/DD格式输入</md-hint>
   </md-input-container>
   <md-button-toggle-group formControlName="paymentMethod">
-    <md-button-toggle value="self" checked="true">自费</md-button-toggle>
+    <md-button-toggle value="self">自费</md-button-toggle>
     <md-button-toggle value="bill">记账</md-button-toggle>
     <md-button-toggle value="insurance">医保</md-button-toggle>
   </md-button-toggle-group>
   <md-input-container>
-    <input mdInput formControlName="phone" type="tel" placeholder="联系电话">
+    <input mdInput formControlName="phone" type="text" placeholder="联系电话">
   </md-input-container>
   <md-input-container>
-    <textarea mdInput formControlName="addr" placeholder="家庭住址">1600 Amphitheatre Pkwy</textarea>
+    <textarea mdInput formControlName="addr" placeholder="家庭住址">
+      
+    </textarea>
   </md-input-container>
   <span>
-    <button type="submit">完成</button>
+    <button md-raised-button type="submit">完成</button>
   </span>
 </form>

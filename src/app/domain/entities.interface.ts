@@ -68,8 +68,15 @@ export interface LoginTab {
   index: number;
 }
 
+export interface AgeWithUnit{
+  age: number;
+  ageUnit: AgeUnit;
+  dateOfBirth: string;
+}
+
 export interface AppState{
   auth: Auth;
   loginTab: LoginTab;
+  ageConvert: AgeWithUnit;
   router: RouterState;
 }
