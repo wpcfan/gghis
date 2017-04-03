@@ -12,7 +12,11 @@
     <md-radio-button value="false">女</md-radio-button>
   </md-radio-group>
   <md-select placeholder="血型" align="end" formControlName="bloodType">
-    <md-option *ngFor="let type of bloodTypes" [value]="type.bloodType">{{type.label}}</md-option>
+    <md-option 
+      *ngFor="let type of bloodTypes" 
+      [value]="type.bloodType">
+      {{type.label}}
+    </md-option>
   </md-select>
   <md-input-container align="end">
       <input mdInput 

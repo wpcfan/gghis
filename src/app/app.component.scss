@@ -6,15 +6,17 @@
 // Using the $theme variable from the pre-built theme you can call the theming function
 @include his-theme($theme);
 .site{
-  display: flex;
-  flex-direction: column;
-  min-height: 85vh;
+  min-height: 100%;
 }
-
+.header{
+  height: 50px;
+}
+.footer{
+  height: 50px;
+}
 .content{
-  flex: 1;
+  height: calc(100vh - 110px);
 }
-
 .sidenav {
   width: 200px;
 }

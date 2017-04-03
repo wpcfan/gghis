@@ -1,11 +1,11 @@
 <md-sidenav-container>
-  <app-header (toggle)="sidenav.toggle()"></app-header>
   <div class="site">
+    <app-header (toggle)="sidenav.toggle()" class="header"></app-header>
     <main class="content">
       <router-outlet></router-outlet>
     </main>
+    <app-footer class="footer"></app-footer>
   </div>
-  <app-footer></app-footer>
   <md-sidenav #sidenav mode="over" class="sidenav">
   </md-sidenav>
 </md-sidenav-container>

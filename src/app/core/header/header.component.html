@@ -3,7 +3,7 @@
     <md-icon>menu</md-icon>
   </button>
   <span>格冠医疗管理系统</span>
-  <span class="spacer"></span>
+  <span fxFlexFill></span>
   <span *ngIf="(auth$ | async).user !== undefined">
     <a routerLink="/profile">{{(auth$|async).user.name}}</a>
   </span>

@@ -18,6 +18,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import * as moment from 'moment/moment';
 
 @Component({
   selector: 'app-patient-basic',
@@ -55,7 +56,7 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
       bloodType: ['UNKNOWN', Validators.required],
       age: [''],
       ageUnit: [''],
-      dateOfBirth: ['', Validators.required],
+      dateOfBirth: ['', Validators.required, this.validateDate],
       paymentMethod: ['self', Validators.required],
       phone: ['', Validators.required],
       addr: ['']
@@ -94,4 +95,13 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
     if(!valid) return;
     console.log(JSON.stringify(value));
   }
+
+   validateDate(c: FormControl): {[key: string]: any}{		      
+     const result = moment(c.value).isValid
+         && moment(c.value).isBefore()
+         && moment(c.value).year()> 1900;
+      return result? Observable.of(null) : Observable.of({
+        valid: false
+      });
+    }
 }
