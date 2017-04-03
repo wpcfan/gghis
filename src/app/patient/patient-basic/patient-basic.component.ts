@@ -31,6 +31,7 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
   ageSub: Subscription;
   ageUnitSub: Subscription;
   dateOfBirthSub: Subscription;
+  ageConvertSub: Subscription;
   ageUnits: { ageUnit: AgeUnit, label: string}[] = [
     {ageUnit: AgeUnit.Year, label: '岁'},
     {ageUnit: AgeUnit.Month, label: '月'},
@@ -43,6 +44,7 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
     {bloodType: BloodType.O , label: 'O'},
     {bloodType: BloodType.UNKNOWN , label: '未知'},
   ];
+
   constructor(
     private fb: FormBuilder,
     private store$: Store<AppState>) { 
@@ -61,6 +63,12 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
       phone: ['', Validators.required],
       addr: ['']
     });
+    this.ageConvertSub = this.ageConvert$.subscribe(value => this.form.patchValue({
+        'age': value.age, 
+        'ageUnit': value.ageUnit, 
+        'dateOfBirth': value.dateOfBirth
+      })
+    );
     this.ageSub = this.form.controls['age'].valueChanges
       .debounceTime(500)
       .distinctUntilChanged()
@@ -78,11 +86,18 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
     this.dateOfBirthSub = this.form.controls['dateOfBirth'].valueChanges
       .debounceTime(500)
       .distinctUntilChanged()
-      .subscribe(ageUnit => this.store$.dispatch({
-        type: ageActions.ActionTypes.CHANGE_DATE,
-        payload: this.form.value.dateOfBirth
-      }));
+      .subscribe(date => {
+        this.store$.dispatch({
+          type: ageActions.ActionTypes.CHANGE_DATE,
+          payload: date
+        });
+      });
   }
+
+  /**
+   * The Subscriptions have to be unsubscribed 
+   * otherwise there will be memory leaks.
+   */
   ngOnDestroy(){
     if(this.ageSub !== undefined && !this.ageSub.closed)
       this.ageSub.unsubscribe();
@@ -90,18 +105,27 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
       this.ageUnitSub.unsubscribe();
     if(this.dateOfBirthSub !== undefined && !this.dateOfBirthSub.closed)
       this.dateOfBirthSub.unsubscribe();
-  }
-  onSubmit({value, valid}) {
-    if(!valid) return;
-    console.log(JSON.stringify(value));
+    if(this.ageConvertSub !== undefined && !this.ageConvertSub.closed)
+      this.ageConvertSub.unsubscribe();
   }
 
-   validateDate(c: FormControl): {[key: string]: any}{		      
-     const result = moment(c.value).isValid
-         && moment(c.value).isBefore()
-         && moment(c.value).year()> 1900;
-      return result? Observable.of(null) : Observable.of({
-        valid: false
-      });
-    }
+  onSubmit({value, valid}) {
+    console.log(JSON.stringify(value));
+    if(!valid) return;
+  }
+
+  /**
+   * To validate the input of date of birth
+   * The asyncous validator has to be used 
+   * as we use valueChanges which is an Observable
+   * @param c is the @FormControl to be validated
+   */
+  validateDate(c: FormControl): {[key: string]: any}{		      
+    const result = moment(c.value).isValid
+      && moment(c.value).isBefore()
+      && moment(c.value).year()> 1900;
+    return result? Observable.of(null) : Observable.of({
+      valid: false
+    });
+  }
 }
