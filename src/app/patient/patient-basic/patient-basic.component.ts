@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { 
   Patient, 
+  PaymentMethod,
   BloodType, 
   AgeUnit, 
   AgeWithUnit, 
@@ -44,6 +45,11 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
     {bloodType: BloodType.O , label: 'O'},
     {bloodType: BloodType.UNKNOWN , label: '未知'},
   ];
+  paymentMethods: {paymentMethod: PaymentMethod, label: string}[] = [
+    {paymentMethod: PaymentMethod.SELF, label: '自费'},
+    {paymentMethod: PaymentMethod.BILLED, label: '记账'},
+    {paymentMethod: PaymentMethod.INSURANCE, label: '医保'}
+  ]
 
   constructor(
     private fb: FormBuilder,
@@ -55,11 +61,11 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
     this.form = this.fb.group({
       name: ['', Validators.required],
       gender: ['true', Validators.required],
-      bloodType: ['UNKNOWN', Validators.required],
+      bloodType: [BloodType.UNKNOWN, Validators.required],
       age: [''],
       ageUnit: [''],
       dateOfBirth: ['', Validators.required, this.validateDate],
-      paymentMethod: ['self', Validators.required],
+      paymentMethod: [PaymentMethod.SELF, Validators.required],
       phone: ['', Validators.required],
       addr: ['']
     });
@@ -67,7 +73,7 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
         'age': value.age, 
         'ageUnit': value.ageUnit, 
         'dateOfBirth': value.dateOfBirth
-      })
+      }, {onlySelf: true, emitEvent: false})
     );
     this.ageSub = this.form.controls['age'].valueChanges
       .debounceTime(500)
@@ -110,8 +116,8 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
   }
 
   onSubmit({value, valid}) {
-    console.log(JSON.stringify(value));
     if(!valid) return;
+    console.log(JSON.stringify(value));
   }
 
   /**

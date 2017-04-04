@@ -66,13 +66,13 @@ const buildAgeWithUnit = (date: string) => {
   const monthsDiff = moment().diff(date, 'months');
   const yearsDiff = moment().diff(date, 'years');
 
-  if(monthsDiff <= 3){ // less than 3 months
+  if(daysDiff < 120){ // less than 120 days
     return {
       age: daysDiff,
       ageUnit: AgeUnit.Day,
       dateOfBirth: date
     }
-  } else if(yearsDiff <= 2) { // less than 2 years
+  } else if(monthsDiff < 24) { // less than 2 years
     return {
       age: monthsDiff,
       ageUnit: AgeUnit.Month,

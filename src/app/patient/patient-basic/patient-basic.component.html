@@ -5,6 +5,7 @@
  novalidate>
   <md-input-container>
     <input mdInput formControlName="name" type="text" placeholder="姓名">
+    <md-hint *ngIf="form.controls['name'].hasError('required')">姓名是必填项</md-hint>
   </md-input-container>
   <md-radio-group formControlName="gender">
     <span mdPrefix>性别：</span>
@@ -35,18 +36,16 @@
     </md-button-toggle>
   </md-button-toggle-group>
   <md-input-container>
-      <input mdInput 
-        formControlName="dateOfBirth" 
-        type="date" 
-        placeholder="出生日期"
-        min="1900-01-01"
-        max="2999-01-01">
+    <input mdInput 
+      formControlName="dateOfBirth" 
+      type="date" 
+      placeholder="出生日期"
+      min="1900-01-01"
+      max="2999-01-01">
       <md-hint align="start">YYYY/MM/DD格式输入</md-hint>
   </md-input-container>
   <md-button-toggle-group formControlName="paymentMethod">
-    <md-button-toggle value="self">自费</md-button-toggle>
-    <md-button-toggle value="bill">记账</md-button-toggle>
-    <md-button-toggle value="insurance">医保</md-button-toggle>
+    <md-button-toggle *ngFor="let method of paymentMethods" [value]="method.paymentMethod">{{method.label}}</md-button-toggle>
   </md-button-toggle-group>
   <md-input-container>
     <input mdInput formControlName="phone" type="text" placeholder="联系电话">

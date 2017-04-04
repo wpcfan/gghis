@@ -12,6 +12,12 @@ export enum IdentityType {
   Other
 }
 
+export enum PaymentMethod{
+  SELF = 0,
+  BILLED,
+  INSURANCE
+}
+
 export enum BloodType {
   UNKNOWN = 0,
   A,
