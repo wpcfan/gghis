@@ -1,3 +1,13 @@
 .form{
-  min-width: 400px;
+  width: 100%;
+  padding: 20px;
+}
+
+.warning {
+  background-color: #F2DEDE; 
+  color: #BF7271;
+}
+
+.required {
+  background-color: darkred;
 }

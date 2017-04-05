@@ -1,36 +1,11 @@
 import { RouterState } from '@ngrx/router-store';
-
-export enum IdentityType {
-  IdCard = 0,
-  Passport,
-  DriverLicense,
-  ResidenceBooklet,
-  SpecialDistrict,
-  Military,
-  Soldier,
-  Civilian,
-  Other
-}
-
-export enum PaymentMethod{
-  SELF = 0,
-  BILLED,
-  INSURANCE
-}
-
-export enum BloodType {
-  UNKNOWN = 0,
-  A,
-  B,
-  AB,
-  O
-}
-
-export enum AgeUnit {
-  Year = 0,
-  Month,
-  Day
-}
+import {
+  IdentityType,
+  ContactType,
+  PaymentMethod,
+  BloodType,
+  AgeUnit
+} from './entities.enum';
 
 export interface User {
   id?: string;
@@ -40,19 +15,29 @@ export interface User {
   phone?: string;
 }
 
+export interface Contact{
+  type: ContactType;
+  name: string;
+  phone: string;
+}
+
+export interface Identity{
+  identityNo: string;
+  identityType: IdentityType;
+}
+
 export interface Patient {
   id: string;
   name: string;
   gender: boolean;
   dateOfBirth: Date;
-  insuraceNo: string;
-  identityNo: string;
-  identityType: IdentityType;
+  identities: Identity[];
   bloodType: BloodType;
-  height: number;
-  weight: number;
+  height?: number;
+  weight?: number;
   phone: string;
-  addr: string;
+  addr?: string;
+  contact?: Contact; 
 }
 
 export interface Err {

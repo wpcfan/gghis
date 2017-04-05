@@ -1,5 +1,6 @@
 import { Reducer, Action } from '@ngrx/store';
-import { AgeWithUnit, AgeUnit } from '../domain/entities.interface';
+import { AgeWithUnit } from '../domain/entities.interface';
+import { AgeUnit } from '../domain/entities.enum';
 import * as ageAction from '../actions/age-convert.action';
 import * as moment from 'moment/moment';
 

@@ -7,19 +7,31 @@ import {
 } from '@angular/forms';
 import { 
   Patient, 
-  PaymentMethod,
-  BloodType, 
-  AgeUnit, 
   AgeWithUnit, 
   AppState 
 } from '../../domain/entities.interface';
+import {
+  PaymentMethod,
+  BloodType, 
+  AgeUnit, 
+  IdentityType
+} from '../../domain/entities.enum';
+import {
+  InfoFromId,
+  extractInfo,
+  Gb2260Addrs,
+  buildAddr,
+  buildDate,
+  dateValid
+} from '../../domain/gb2260.interface';
 import * as ageActions from '../../actions/age-convert.action';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
-import * as moment from 'moment/moment';
 
 @Component({
   selector: 'app-patient-basic',
@@ -33,22 +45,41 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
   ageUnitSub: Subscription;
   dateOfBirthSub: Subscription;
   ageConvertSub: Subscription;
-  ageUnits: { ageUnit: AgeUnit, label: string}[] = [
-    {ageUnit: AgeUnit.Year, label: '岁'},
-    {ageUnit: AgeUnit.Month, label: '月'},
-    {ageUnit: AgeUnit.Day, label: '天'}
+  idSub: Subscription;
+  idTypeSub: Subscription;
+  idTypeSubject: BehaviorSubject<IdentityType>;
+  ageUnits: { value: AgeUnit, label: string}[] = [
+    {value: AgeUnit.Year, label: '岁'},
+    {value: AgeUnit.Month, label: '月'},
+    {value: AgeUnit.Day, label: '天'}
   ];
-  bloodTypes: { bloodType: BloodType, label: string }[] = [
-    {bloodType: BloodType.A, label: 'A'},
-    {bloodType: BloodType.B, label: 'B'},
-    {bloodType: BloodType.AB , label: 'AB'},
-    {bloodType: BloodType.O , label: 'O'},
-    {bloodType: BloodType.UNKNOWN , label: '未知'},
+  bloodTypes: { value: BloodType, label: string }[] = [
+    {value: BloodType.A, label: 'A'},
+    {value: BloodType.B, label: 'B'},
+    {value: BloodType.AB , label: 'AB'},
+    {value: BloodType.O , label: 'O'},
+    {value: BloodType.UNKNOWN , label: '未知'},
   ];
-  paymentMethods: {paymentMethod: PaymentMethod, label: string}[] = [
-    {paymentMethod: PaymentMethod.SELF, label: '自费'},
-    {paymentMethod: PaymentMethod.BILLED, label: '记账'},
-    {paymentMethod: PaymentMethod.INSURANCE, label: '医保'}
+  paymentMethods: {value: PaymentMethod, label: string}[] = [
+    {value: PaymentMethod.SELF, label: '自费'},
+    {value: PaymentMethod.BILLED, label: '记账'},
+    {value: PaymentMethod.INSURANCE, label: '医保'}
+  ];
+  identityTypes: {value: IdentityType, label: string}[] = [
+    {value: IdentityType.IdCard, label: '身份证'},
+    {value: IdentityType.Insurance, label: '医保'},
+    {value: IdentityType.Passport, label: '护照'},
+    {value: IdentityType.SpecialDistrict, label: '港澳通行证'},
+    {value: IdentityType.ResidenceBooklet, label: '户口簿'},
+    {value: IdentityType.DriverLicense, label: '驾照'},
+    {value: IdentityType.Military, label: '军官证'},
+    {value: IdentityType.Soldier, label: '士兵证'},
+    {value: IdentityType.Civilian, label: '文职官员证'},
+    {value: IdentityType.Civilian, label: '其它'}
+  ];
+  genders: {value: boolean, label:string}[] = [
+    {value: true, label: '男'},
+    {value: false, label: '女'}
   ]
 
   constructor(
@@ -59,16 +90,21 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = this.fb.group({
+      paymentMethod: [PaymentMethod.SELF, Validators.required],
+      identityType: [IdentityType.IdCard],
+      identityNo: [''],
       name: ['', Validators.required],
-      gender: ['true', Validators.required],
+      gender: [true, Validators.required],
       bloodType: [BloodType.UNKNOWN, Validators.required],
+      height: ['', this.validateHeight],
+      weight: ['', this.validateWeight],
       age: [''],
       ageUnit: [''],
       dateOfBirth: ['', Validators.required, this.validateDate],
-      paymentMethod: [PaymentMethod.SELF, Validators.required],
       phone: ['', Validators.required],
       addr: ['']
     });
+    this.idTypeSubject = new BehaviorSubject<IdentityType>(this.form.get('identityType').value);
     this.ageConvertSub = this.ageConvert$.subscribe(value => this.form.patchValue({
         'age': value.age, 
         'ageUnit': value.ageUnit, 
@@ -98,6 +134,33 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
           payload: date
         });
       });
+      const idNo$ = this.form.get('identityNo').valueChanges
+        .debounceTime(500)
+        .filter(c => c !== undefined);
+
+      const idType$ = this.form.get('identityType').valueChanges
+        .debounceTime(500);
+
+      this.idTypeSub = idType$.subscribe(v => {
+        this.idTypeSubject.next(v);
+      });
+
+      const idWithLatest$ = this.idTypeSubject.asObservable()
+        .filter(t => t === IdentityType.IdCard);
+
+      const id$ = Observable.combineLatest(idWithLatest$, idNo$, (t, i) => i);
+      this.idSub = id$.subscribe(i => {
+        this.form.get('identityNo').setValidators([this.validateIdNumber]);
+        this.form.get('identityNo').updateValueAndValidity();
+        if(this.form.get('identityNo').valid){
+          const id = extractInfo(i);
+          this.form.patchValue({
+            'addr': id.addr,
+            'gender': id.gender,
+            'dateOfBirth': id.dateOfBirth
+          });
+        }
+      });
   }
 
   /**
@@ -113,9 +176,14 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
       this.dateOfBirthSub.unsubscribe();
     if(this.ageConvertSub !== undefined && !this.ageConvertSub.closed)
       this.ageConvertSub.unsubscribe();
+    if(this.idSub !== undefined && !this.idSub.closed)
+      this.idSub.unsubscribe();
+    if(this.idTypeSub !== undefined && !this.idTypeSub.closed)
+      this.idTypeSub.unsubscribe();
   }
 
   onSubmit({value, valid}) {
+    console.log(this.form.errors)
     if(!valid) return;
     console.log(JSON.stringify(value));
   }
@@ -126,12 +194,44 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
    * as we use valueChanges which is an Observable
    * @param c is the @FormControl to be validated
    */
-  validateDate(c: FormControl): {[key: string]: any}{		      
-    const result = moment(c.value).isValid
-      && moment(c.value).isBefore()
-      && moment(c.value).year()> 1900;
-    return result? Observable.of(null) : Observable.of({
-      valid: false
+  validateDate(c: FormControl): {[key: string]: any}{	    
+    return dateValid(c.value) ? Observable.of(null) : Observable.of({
+      dateNotValid: true
     });
   }
+
+  validateWeight(c: FormControl): {[key: string]: any}{
+    if(c.value===undefined || c.value==='') return null;
+    const result = c.value > 0 && c.value < 400;
+    return result? null : {
+      weightNotValid:  true
+    }
+  }
+
+  validateHeight(c: FormControl): {[key: string]: any}{
+    if(c.value===undefined || c.value==='') return null;
+    const result = c.value > 10 && c.value < 250;
+    return result? null : {
+      heightNotValid:  true
+    }
+  }
+
+  validateIdNumber(c: FormControl): {[key: string]: any}{
+    const value = c.value;
+    if(value===undefined || value==='') return null;
+    if(value.length !== 18) return {idNotValid: true};
+    const pattern = /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}[x0-9]$/;
+    let result = false;
+    if(pattern.test(value)){
+      const addrPart = buildAddr(value.substring(0,6));
+      const birthPart = buildDate(value.substring(6,14));
+      const genderPart = parseInt(value.substring(14,17));
+      if(addrPart !== null && birthPart !== null && !isNaN(genderPart))
+        result = true;
+    }
+    return result? null : {
+      idNotValid:  true
+    }
+  }
+  
 }

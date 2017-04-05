@@ -1,6 +1,55 @@
+import * as moment from 'moment/moment';
+
 export interface Gb2260{
   code: string;
   addr: string;
+}
+
+export interface InfoFromId{
+  addr: string;
+  dateOfBirth: string;
+  gender: boolean;
+}
+
+export function dateValid(value: string): boolean{
+  return moment(value).isValid
+      && moment(value).isBefore()
+      && moment(value).year()> 1900;	 
+}
+
+export function buildDate(value: string): string{
+  const date = value.substring(0,4) + '-' + value.substring(4,6) + '-' + value.substring(6);
+  if(moment(date).isValid
+    && moment(date).isBefore()
+    && moment(date).year()> 1900)
+    return moment(date).format('YYYY-MM-DD');
+  return null;
+}
+
+export function buildAddr(value: string): string {
+  const addrs = Gb2260Addrs.filter(c => c.code === value);
+  if(addrs === undefined) return null;
+  if(addrs.length > 0){
+    return addrs[0].addr;
+  } else{
+    const blurAddrs = Gb2260Addrs.filter(c => c.code === value.substring(0,4)+'00' 
+    || c.code === value.substring(0,2)+'0000');
+    if(addrs !== undefined && blurAddrs.length > 0)
+      return blurAddrs[0].addr;
+  }
+  return null;
+}
+
+export function extractInfo(idNo: string): InfoFromId {
+  const addrPart = idNo.substring(0,6);
+  const birthPart = idNo.substring(6,14);
+  const genderPart = parseInt(idNo.substring(14,17));
+  
+  return Object.assign({}, {
+    addr: buildAddr(addrPart),
+    dateOfBirth: buildDate(birthPart),
+    gender: genderPart % 2 === 0 ? false: true
+  });
 }
 
 export const Gb2260Addrs: Gb2260[] = [

@@ -1,6 +1,7 @@
 import { Action } from '@ngrx/store';
 import { type } from '../utils/type';
-import { AgeWithUnit, AgeUnit } from '../domain/entities.interface';
+import { AgeWithUnit } from '../domain/entities.interface';
+import { AgeUnit } from '../domain/entities.enum';
 
 export const ActionTypes = {
   CHANGE_UNIT:        type('[AgeWithUnit] Change Unit'),
