@@ -19,6 +19,7 @@ export interface Contact{
   type: ContactType;
   name: string;
   phone: string;
+  addr: string;
 }
 
 export interface Identity{
@@ -37,7 +38,7 @@ export interface Patient {
   weight?: number;
   phone: string;
   addr?: string;
-  contact?: Contact; 
+  contacts?: Contact[]; 
 }
 
 export interface Err {

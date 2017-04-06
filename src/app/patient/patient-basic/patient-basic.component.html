@@ -1,15 +1,15 @@
 <form 
   [formGroup]="form" 
   (ngSubmit)="onSubmit(form)"
-  class="form"
-  novalidate>
-  <div fxLayout="row" fxLayoutAlign="space-around stretch">
-    <span>
-      <md-button-toggle-group fxFlex formControlName="paymentMethod">
+  novalidate
+  class="content container-fluid">
+  <div class="row">
+    <span class="form-group">
+      <md-button-toggle-group formControlName="paymentMethod">
         <md-button-toggle *ngFor="let method of paymentMethods" [value]="method.value">{{method.label}}</md-button-toggle>
       </md-button-toggle-group>
     </span>
-    <span>
+    <span class="form-group">
       <md-select placeholder="证件类型" align="end" formControlName="identityType">
         <md-option 
           *ngFor="let type of identityTypes" 
@@ -17,8 +17,6 @@
           {{type.label}}
         </md-option>
       </md-select>  
-    </span>
-    <span>
       <md-input-container align="end">
         <input mdInput 
           formControlName="identityNo" 
@@ -32,8 +30,8 @@
       </md-input-container>
     </span>
   </div>
-  <div fxLayout="row" fxLayoutAlign="space-around stretch">
-    <span fxFlex="40">
+  <div class="row">
+    <span class="form-group">
       <md-input-container>
         <input mdInput formControlName="name" type="text" placeholder="姓名">
         <md-hint 
@@ -42,16 +40,14 @@
           姓名是必填项
         </md-hint>
       </md-input-container>
-    </span>
-    <span fxFlex="40">
       <md-radio-group formControlName="gender">
         <span mdPrefix>性别：</span>
         <md-radio-button *ngFor="let gender of genders" [value]="gender.value">{{gender.label}}</md-radio-button>
       </md-radio-group>
     </span>
   </div>
-  <div fxLayout="row">
-    <span fxFlex>
+  <div class="row">
+    <span class="form-group">
       <md-input-container align="end">
         <input mdInput 
           formControlName="age" 
@@ -60,8 +56,6 @@
           max="200" 
           min="1">
       </md-input-container>
-    </span>
-    <span fxFlex>
       <md-button-toggle-group  
         formControlName="ageUnit">
         <md-button-toggle 
@@ -70,8 +64,6 @@
           {{unit.label}}
         </md-button-toggle>
       </md-button-toggle-group>
-    </span>
-    <span fxFlex>
       <md-input-container>
         <input mdInput 
           formControlName="dateOfBirth" 
@@ -87,8 +79,20 @@
       </md-input-container>
     </span>
   </div>
-  <div fxLayout="row" fxLayout.xs="column">
-    <span fxFlex>
+  <div class="row">
+    <span class="form-group">
+      <md-input-container>
+        <input mdInput formControlName="phone" type="text" placeholder="联系电话">
+      </md-input-container>
+      <md-input-container>
+        <textarea mdInput formControlName="addr" placeholder="家庭住址">
+          
+        </textarea>
+      </md-input-container>
+    </span>
+  </div>
+  <div class="row">
+    <span class="form-group">
       <md-select placeholder="血型" align="end" formControlName="bloodType">
         <md-option 
           *ngFor="let type of bloodTypes" 
@@ -96,9 +100,7 @@
           {{type.label}}
         </md-option>
       </md-select>  
-    </span>
-    <span fxFlex>
-      <md-input-container>
+      <md-input-container align="end">
         <input mdInput formControlName="height" type="number" placeholder="身高" min="20" max="250">
         <span mdSuffix>厘米</span> 
         <md-hint 
@@ -107,9 +109,7 @@
           身高不合法
         </md-hint>
       </md-input-container>
-    </span>
-    <span fxFlex>
-      <md-input-container>
+      <md-input-container align="end">
         <input mdInput formControlName="weight" type="number" placeholder="体重" min="1" max="400" step="0.1">
         <span mdSuffix>公斤</span> 
         <md-hint 
@@ -120,19 +120,9 @@
       </md-input-container>
     </span>
   </div>
-  <div>
-    <span>
-      <md-input-container fxFlex>
-        <input mdInput formControlName="phone" type="text" placeholder="联系电话">
-      </md-input-container>
-      <md-input-container fxFlex>
-        <textarea mdInput formControlName="addr" placeholder="家庭住址">
-          
-        </textarea>
-      </md-input-container>
+  <div class="row">
+    <span class="form-group">
+      <button md-raised-button color="primary" type="submit">完成</button>
     </span>
-  </div>
-  <div>
-    <button md-raised-button color="primary" type="submit">完成</button>
   </div>
 </form>

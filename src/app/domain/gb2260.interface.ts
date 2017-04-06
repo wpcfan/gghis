@@ -1,5 +1,5 @@
 import * as moment from 'moment/moment';
-
+import { dateValid } from '../utils/date';
 export interface Gb2260{
   code: string;
   addr: string;
@@ -11,17 +11,9 @@ export interface InfoFromId{
   gender: boolean;
 }
 
-export function dateValid(value: string): boolean{
-  return moment(value).isValid
-      && moment(value).isBefore()
-      && moment(value).year()> 1900;	 
-}
-
 export function buildDate(value: string): string{
   const date = value.substring(0,4) + '-' + value.substring(4,6) + '-' + value.substring(6);
-  if(moment(date).isValid
-    && moment(date).isBefore()
-    && moment(date).year()> 1900)
+  if(dateValid(date))
     return moment(date).format('YYYY-MM-DD');
   return null;
 }

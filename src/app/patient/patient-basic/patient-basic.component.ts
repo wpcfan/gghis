@@ -17,13 +17,11 @@ import {
   IdentityType
 } from '../../domain/entities.enum';
 import {
-  InfoFromId,
   extractInfo,
-  Gb2260Addrs,
   buildAddr,
-  buildDate,
-  dateValid
+  buildDate
 } from '../../domain/gb2260.interface';
+import { dateValid } from '../../utils/date';
 import * as ageActions from '../../actions/age-convert.action';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
@@ -89,6 +87,12 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
     }
 
   ngOnInit() {
+    this.initForm();
+    this.handleAgeBirthdayValues();
+    this.handleIdValues();
+  }
+
+  initForm(){
     this.form = this.fb.group({
       paymentMethod: [PaymentMethod.SELF, Validators.required],
       identityType: [IdentityType.IdCard],
@@ -104,7 +108,9 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
       phone: ['', Validators.required],
       addr: ['']
     });
-    this.idTypeSubject = new BehaviorSubject<IdentityType>(this.form.get('identityType').value);
+  }
+
+  handleAgeBirthdayValues(){
     this.ageConvertSub = this.ageConvert$.subscribe(value => this.form.patchValue({
         'age': value.age, 
         'ageUnit': value.ageUnit, 
@@ -134,35 +140,41 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
           payload: date
         });
       });
-      const idNo$ = this.form.get('identityNo').valueChanges
-        .debounceTime(500)
-        .filter(c => c !== undefined);
-
-      const idType$ = this.form.get('identityType').valueChanges
-        .debounceTime(500);
-
-      this.idTypeSub = idType$.subscribe(v => {
-        this.idTypeSubject.next(v);
-      });
-
-      const idWithLatest$ = this.idTypeSubject.asObservable()
-        .filter(t => t === IdentityType.IdCard);
-
-      const id$ = Observable.combineLatest(idWithLatest$, idNo$, (t, i) => i);
-      this.idSub = id$.subscribe(i => {
-        this.form.get('identityNo').setValidators([this.validateIdNumber]);
-        this.form.get('identityNo').updateValueAndValidity();
-        if(this.form.get('identityNo').valid){
-          const id = extractInfo(i);
-          this.form.patchValue({
-            'addr': id.addr,
-            'gender': id.gender,
-            'dateOfBirth': id.dateOfBirth
-          });
-        }
-      });
   }
 
+  handleIdValues(){
+    this.idTypeSubject = new BehaviorSubject<IdentityType>(this.form.get('identityType').value);
+    const idNo$ = this.form.get('identityNo').valueChanges
+      .debounceTime(500)
+      .filter(c => c !== undefined);
+
+    const idType$ = this.form.get('identityType').valueChanges
+      .debounceTime(500);
+
+    this.idTypeSub = idType$.subscribe(v => {
+      this.idTypeSubject.next(v);
+    });
+
+    const idWithLatest$ = this.idTypeSubject.asObservable();
+
+    const id$ = Observable.combineLatest(idWithLatest$, idNo$, (t, i) => {
+      return {type: t, num: i}
+    })
+    .filter(val => val.type === IdentityType.IdCard)
+    .map(v => v.num);
+    this.idSub = id$.subscribe(i => {
+      this.form.get('identityNo').setValidators([this.validateIdNumber]);
+      this.form.get('identityNo').updateValueAndValidity();
+      if(this.form.get('identityNo').valid && this.form.get('identityNo').value !== null){
+        const id = extractInfo(i);
+        this.form.patchValue({
+          'addr': id.addr,
+          'gender': id.gender,
+          'dateOfBirth': id.dateOfBirth
+        });
+      }
+    });
+  }
   /**
    * The Subscriptions have to be unsubscribed 
    * otherwise there will be memory leaks.
@@ -183,7 +195,6 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
   }
 
   onSubmit({value, valid}) {
-    console.log(this.form.errors)
     if(!valid) return;
     console.log(JSON.stringify(value));
   }
@@ -218,7 +229,9 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
 
   validateIdNumber(c: FormControl): {[key: string]: any}{
     const value = c.value;
-    if(value===undefined || value==='') return null;
+    if(value === undefined 
+      || value === null 
+      || value === '') return null;
     if(value.length !== 18) return {idNotValid: true};
     const pattern = /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}[x0-9]$/;
     let result = false;
@@ -229,9 +242,7 @@ export class PatientBasicComponent implements OnInit, OnDestroy {
       if(addrPart !== null && birthPart !== null && !isNaN(genderPart))
         result = true;
     }
-    return result? null : {
-      idNotValid:  true
-    }
+    return result? null : {idNotValid:  true}
   }
   
 }

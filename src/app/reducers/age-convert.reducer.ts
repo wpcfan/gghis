@@ -2,6 +2,7 @@ import { Reducer, Action } from '@ngrx/store';
 import { AgeWithUnit } from '../domain/entities.interface';
 import { AgeUnit } from '../domain/entities.enum';
 import * as ageAction from '../actions/age-convert.action';
+import { dateValid } from '../utils/date';
 import * as moment from 'moment/moment';
 
 const initialAge = 33;
@@ -36,12 +37,6 @@ export function ageConvertReducer (
     default:
       return state;
   }
-}
-
-const dateValid = (date: string) => {
-  return moment(date).isValid 
-        && moment(date).isBefore(moment())
-        && moment(date).year()> 1900;
 }
 
 const getMomentUnit = (ageUnit: AgeUnit) => {
