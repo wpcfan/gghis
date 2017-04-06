@@ -38,6 +38,8 @@ import 'rxjs/add/operator/distinctUntilChanged';
 })
 export class PatientBasicComponent implements OnInit, OnDestroy {
   form: FormGroup;
+  minDate: string = new Date(1900,1,1).toISOString();
+  maxDate: string = new Date(2999,1,1).toISOString();
   ageConvert$: Observable<AgeWithUnit>;
   ageSub: Subscription;
   ageUnitSub: Subscription;

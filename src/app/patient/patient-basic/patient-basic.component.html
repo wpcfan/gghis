@@ -2,127 +2,113 @@
   [formGroup]="form" 
   (ngSubmit)="onSubmit(form)"
   novalidate
-  class="content container-fluid">
-  <div class="row">
-    <span class="form-group">
-      <md-button-toggle-group formControlName="paymentMethod">
-        <md-button-toggle *ngFor="let method of paymentMethods" [value]="method.value">{{method.label}}</md-button-toggle>
-      </md-button-toggle-group>
-    </span>
-    <span class="form-group">
-      <md-select placeholder="证件类型" align="end" formControlName="identityType">
-        <md-option 
-          *ngFor="let type of identityTypes" 
-          [value]="type.value">
-          {{type.label}}
-        </md-option>
-      </md-select>  
-      <md-input-container align="end">
-        <input mdInput 
-          formControlName="identityNo" 
-          type="text" 
-          placeholder="证件号码">
-        <md-hint 
+  class="content">
+  <div fxLayout="row" fxLayoutGap="20px">
+    <md-button-toggle-group formControlName="paymentMethod" fxFlex="30">
+      <md-button-toggle *ngFor="let method of paymentMethods" [value]="method.value">{{method.label}}</md-button-toggle>
+    </md-button-toggle-group>
+    <md-select placeholder="证件类型" align="end" formControlName="identityType" fxFlex="30">
+      <md-option 
+        *ngFor="let type of identityTypes" 
+        [value]="type.value">
+        {{type.label}}
+      </md-option>
+    </md-select>  
+    <md-input-container align="end" fxFlex="30">
+      <input mdInput 
+        formControlName="identityNo" 
+        type="text" 
+        placeholder="证件号码">
+      <md-hint 
+        class="warning"
+        *ngIf="form.controls['identityNo'].dirty && form.controls['identityNo'].hasError('idNotValid')">
+        身份证号不合法
+      </md-hint>
+    </md-input-container>
+  </div>
+  <div fxLayout="row" fxLayoutGap="20px">
+    <md-input-container fxFlex>
+      <input mdInput formControlName="name" type="text" placeholder="姓名">
+      <md-hint 
+        class="warning"
+        *ngIf="form.controls['name'].dirty && form.controls['name'].hasError('required')">
+        姓名是必填项
+      </md-hint>
+    </md-input-container>
+    <md-radio-group formControlName="gender" fxFlex>
+      <span mdPrefix>性别：</span>
+      <md-radio-button *ngFor="let gender of genders" [value]="gender.value">{{gender.label}}</md-radio-button>
+    </md-radio-group>
+  </div>
+  <div fxLayout="row" fxLayoutGap="20px">
+    <md-input-container align="end" fxFlex>
+      <input mdInput 
+        formControlName="age" 
+        type="number" 
+        placeholder="年龄" 
+        max="200" 
+        min="1">
+    </md-input-container>
+    <md-button-toggle-group  
+      formControlName="ageUnit" fxFlex>
+      <md-button-toggle 
+        *ngFor="let unit of ageUnits" 
+        [value]="unit.value">
+        {{unit.label}}
+      </md-button-toggle>
+    </md-button-toggle-group>
+    <md-input-container fxFlex>
+      <input mdInput 
+        formControlName="dateOfBirth" 
+        type="date" 
+        placeholder="出生日期"
+        [min]="minDate"
+        [max]="maxDate">
+        <md-hint align="start"
           class="warning"
-          *ngIf="form.controls['identityNo'].dirty && form.controls['identityNo'].hasError('idNotValid')">
-          身份证号不合法
+          *ngIf="form.controls['dateOfBirth'].dirty && form.controls['dateOfBirth'].hasError('dateNotValid')">
+          请输入合法的出生日期
         </md-hint>
-      </md-input-container>
-    </span>
+    </md-input-container>
   </div>
-  <div class="row">
-    <span class="form-group">
-      <md-input-container>
-        <input mdInput formControlName="name" type="text" placeholder="姓名">
-        <md-hint 
-          class="warning"
-          *ngIf="form.controls['name'].dirty && form.controls['name'].hasError('required')">
-          姓名是必填项
-        </md-hint>
-      </md-input-container>
-      <md-radio-group formControlName="gender">
-        <span mdPrefix>性别：</span>
-        <md-radio-button *ngFor="let gender of genders" [value]="gender.value">{{gender.label}}</md-radio-button>
-      </md-radio-group>
-    </span>
+  <div fxLayout="row" fxLayoutGap="20px">
+    <md-input-container fxFlex>
+      <input mdInput formControlName="phone" type="text" placeholder="联系电话">
+    </md-input-container>
+    <md-input-container fxFlex>
+      <textarea mdInput formControlName="addr" placeholder="家庭住址">
+        
+      </textarea>
+    </md-input-container>
   </div>
-  <div class="row">
-    <span class="form-group">
-      <md-input-container align="end">
-        <input mdInput 
-          formControlName="age" 
-          type="number" 
-          placeholder="年龄" 
-          max="200" 
-          min="1">
-      </md-input-container>
-      <md-button-toggle-group  
-        formControlName="ageUnit">
-        <md-button-toggle 
-          *ngFor="let unit of ageUnits" 
-          [value]="unit.value">
-          {{unit.label}}
-        </md-button-toggle>
-      </md-button-toggle-group>
-      <md-input-container>
-        <input mdInput 
-          formControlName="dateOfBirth" 
-          type="date" 
-          placeholder="出生日期"
-          min="1900-01-01"
-          max="2999-01-01">
-          <md-hint align="start"
-            class="warning"
-            *ngIf="form.controls['dateOfBirth'].dirty && form.controls['dateOfBirth'].hasError('dateNotValid')">
-            请输入合法的出生日期
-          </md-hint>
-      </md-input-container>
-    </span>
+  <div fxLayout="row" fxLayoutGap="20px">
+    <md-select placeholder="血型" align="end" formControlName="bloodType" fxFlex>
+      <md-option 
+        *ngFor="let type of bloodTypes" 
+        [value]="type.value">
+        {{type.label}}
+      </md-option>
+    </md-select>  
+    <md-input-container align="end" fxFlex>
+      <input mdInput formControlName="height" type="number" placeholder="身高" min="20" max="250">
+      <span mdSuffix>厘米</span> 
+      <md-hint 
+        class="warning"
+        *ngIf="form.controls['height'].dirty && form.controls['height'].hasError('heightNotValid')">
+        身高不合法
+      </md-hint>
+    </md-input-container>
+    <md-input-container align="end" fxFlex>
+      <input mdInput formControlName="weight" type="number" placeholder="体重" min="1" max="400" step="0.1">
+      <span mdSuffix>公斤</span> 
+      <md-hint 
+        class="warning"
+        *ngIf="form.controls['weight'].dirty && form.controls['weight'].hasError('weightNotValid')">
+        体重不合法
+      </md-hint>
+    </md-input-container>
   </div>
-  <div class="row">
-    <span class="form-group">
-      <md-input-container>
-        <input mdInput formControlName="phone" type="text" placeholder="联系电话">
-      </md-input-container>
-      <md-input-container>
-        <textarea mdInput formControlName="addr" placeholder="家庭住址">
-          
-        </textarea>
-      </md-input-container>
-    </span>
-  </div>
-  <div class="row">
-    <span class="form-group">
-      <md-select placeholder="血型" align="end" formControlName="bloodType">
-        <md-option 
-          *ngFor="let type of bloodTypes" 
-          [value]="type.value">
-          {{type.label}}
-        </md-option>
-      </md-select>  
-      <md-input-container align="end">
-        <input mdInput formControlName="height" type="number" placeholder="身高" min="20" max="250">
-        <span mdSuffix>厘米</span> 
-        <md-hint 
-          class="warning"
-          *ngIf="form.controls['height'].dirty && form.controls['height'].hasError('heightNotValid')">
-          身高不合法
-        </md-hint>
-      </md-input-container>
-      <md-input-container align="end">
-        <input mdInput formControlName="weight" type="number" placeholder="体重" min="1" max="400" step="0.1">
-        <span mdSuffix>公斤</span> 
-        <md-hint 
-          class="warning"
-          *ngIf="form.controls['weight'].dirty && form.controls['weight'].hasError('weightNotValid')">
-          体重不合法
-        </md-hint>
-      </md-input-container>
-    </span>
-  </div>
-  <div class="row">
-    <span class="form-group">
-      <button md-raised-button color="primary" type="submit">完成</button>
-    </span>
+  <div fxLayout="row" fxLayoutGap="20px">
+    <button md-raised-button color="primary" type="submit" fxFlex>完成</button>
   </div>
 </form>
